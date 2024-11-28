@@ -8,27 +8,66 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             background-color: #f4f4f4;
         }
         h1 {
             text-align: center;
-            font-size: 36px; /* Domyślny rozmiar czcionki dla <h1> */
+            font-size: 45px;
         }
         h1 + h4 {
             text-align: center;
-            font-size: 18px; /* Zmniejszenie rozmiaru tekstu pod tytułem */
+            font-size: 20px;
         }
-        .category {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+
+        /* Sekcja kategorii w układzie siatki */
+	.categories {
+   		 display: flex;
+    		flex-wrap: wrap; /* Dla układu wielowierszowego */
+    		gap: 20px; /* Odstępy między kategoriami */
+    		justify-content: flex-start;
+	}
+
+	/* Pojedyncza kategoria */
+	.category {
+   		 background-color: #ffffff;
+   		 border-radius: 8px;
+   		 padding: 15px;
+   		 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   		 flex: 1 1 calc(50% - 20px); /* Dwie kolumny z odstępem */
+   		 max-width: 300px;
+	}
+
+	/* Specjalna sekcja PSK */
+	.category.psk {
+   		 width: 600px; /* szerokość sekcji PSK tutaj */
+   		 flex: none; /* Wyłącza domyślną elastyczność sekcji */
+   		 max-width: 25%; /* Zapewnia, że sekcja nie będzie szersza niż dostępna przestrzeń */
+	}
+
+
         .category h2 {
-            margin-top: 0;
+            margin: 0 0 10px; /* Mniejszy odstęp między tytułem a zawartością */
+            font-size: 25px;
         }
+
+        /* W sekcji PSK: mniejszy odstęp między nagłówkiem a kolumnami */
+        .category.psk h2 {
+            margin-bottom: -15px; /* Odstęp między tytułem a zawartością */
+        }
+
+
+        .category-content {
+            display: flex;
+            justify-content: space-between;
+            gap: -35px; /* Odstępy między kolumnami */
+        }
+
+        .category-column {
+            flex: 1;
+        }
+
+        /* Lista w kolumnach */
         ul {
             list-style-type: none;
             padding-left: 20px;
@@ -43,6 +82,23 @@
         a:hover {
             text-decoration: underline;
         }
+
+        /* Tabela wydarzeń */
+        .table-style table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-style th, .table-style td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .table-style th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        /* Sekcja stopki */
         footer {
             text-align: center;
             margin-top: 40px;
@@ -61,46 +117,111 @@
     <h1>Piotrkowska19web</h1>
     <h4>jakub-arkadiusz-putowski/p19web.git</h4>
     
-    <!-- PSK -->
-    <div class="category">
-        <h2>PSK</h2>
-        <ul>
-            <li><a href="text.html">semestr-1</a></li>
-            <li><a href="text.html">semestr-2</a></li>
-            <li><a href="text.html">semestr-3</a></li>
-            <li><a href="text.html">semestr-4</a></li>
-            <li><a href="text.html">semestr-5</a></li>
-        </ul>
+    <!-- Główna sekcja z kategoriami -->
+    <div class="categories">
+
+        <!-- Sekcja PSK -->
+        <div class="category psk">
+            <h2>PSK</h2>
+            <div class="category-content">
+                <!-- Kolumna 1: Semestry -->
+                <div class="category-column">
+                    <h3>semestry</h3>
+                    <ul>
+                        <li><a href="text.html">semestr-1</a></li>
+                        <li><a href="text.html">semestr-2</a></li>
+                        <li><a href="text.html">semestr-3</a></li>
+                        <li><a href="text.html">semestr-4</a></li>
+                        <li><a href="text.html">semestr-5</a></li>
+                    </ul>
+                </div>
+                <!-- Kolumna 2: Prace -->
+                <div class="category-column">
+                    <h3>zadania</h3>
+                    <ul>
+                        <li><a href="text.html">praca-inżynierska</a></li>
+                        <li><a href="asd.asd">Piekoszewski</a></li>
+                        <li>....</li>
+                        <li><a href="text.html">LIGO-interferometr</a></li>
+                        <li><a href="text.html">siatka-dyfrakcyjna</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        
+        <!-- Sekcja korepetycje -->
+        <div class="category">
+            <h2>korepetycje</h2>
+            <ul>
+                <li><a href="text.html">Fizyka</a></li>
+                <li><a href="text.html">Matematyka</a></li>
+                <p><a href="text.html">godziny zajęć</a></p>
+            </ul>
+        </div>
+
+        <!-- Sekcja edukacja -->
+        <div class="category">
+            <h2>educayshun</h2>
+            <ul>
+                <li><a href="text.html">Fizyka</a></li>
+                <li><a href="text.html">Matematyka</a></li>
+            </ul>
+        </div>
+
+        <!-- Sekcja syncthing -->
+        <div class="category">
+            <h2>syncthing</h2>
+            <ul>
+                <li><a href="text.html">syncthing-p19host</a></li>
+                <li><a href="text.html">syncthing-p19hp</a></li>
+            </ul>
+        </div>
+
+
+
+        <!-- Sekcja Drivespace -->
+        <div class="category">
+            <h2>Halu playlist</h2>
+            <ul>
+                <li><a href="semestr5.html">link1</a></li>
+		<li><a href="semestr5.html">link2</a></li>
+		<li><a href="semestr5.html">link3</a></li>
+		<li><a href="semestr5.html">link4</a></li>
+            </ul>
+        </div>
     </div>
 
-    <!-- korepetycje -->
-    <div class="category">
-        <h2>text2</h2>
-        <ul>
-            <li><a href="text.html">Fizyka</a></li>
-            <li><a href="text.html">Matematyka</a></li>
 
-        </ul>
+
+    <!-- Sekcja notatek -->
+    <div class="notes-section table-style">
+        <h2>Wydarzenia</h2>
+        <table>
+            <tr>
+                <th>Czas:</th>
+                <th>Nazwa:</th>
+                <th>Opis:</th>
+            </tr>
+            <tr>
+                <td>2 grudnia 2024</td>
+                <td>KSUD - Lab 6</td>
+                <td>Sprawozdanie</td>
+            </tr>
+            <tr>
+                <td>29 listopada 2024, 08:00</td>
+                <td>Korepetycje matematyka</td>
+                <td>Oliwier Tworek</td>
+            </tr>
+            <tr>
+                <td>29 listopada 2024, 12:00</td>
+                <td>Badanie wzroku</td>
+                <td>Galeria Korona</td>
+            </tr>
+        </table>
     </div>
-
-    <!-- syncthing -->
-    <div class="category">
-        <h2>syncthing</h2>
-        <ul>
-            <li><a href="text.html">syncthing-p19host</a></li>
-            <li><a href="text.html">syncthing-p19hp</a></li>
-
-        </ul>
-    </div>
-
-        <!-- category -->
-    <div class="category">
-        <h2>drivespace-private</h2>
-        <ul>
-            <p><a href="semestr5.html"> </a></p>
-        </ul>
-    </div>
-
+    
     <footer>
         <p>subtext1</p>
         <p>subtext1</p>
