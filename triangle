@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Trójkąta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 50px;
+        }
+        .form-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .form-panel input {
+            padding: 8px;
+            font-size: 16px;
+        }
+        .form-panel button {
+            padding: 8px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-panel button:hover {
+            background-color: #45a049;
+        }
+        canvas {
+            border: 1px solid #333;
+            background-color: white;
+        }
+        .hidden {
+            display: none;
+        }
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .info-panel div {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-panel">
+            <h2>Wprowadź współrzędne wierzchołków:</h2>
+            <label for="xA">Wierzchołek A (x, y):</label>
+            <input type="number" id="xA" placeholder="xA" step="any">
+            <input type="number" id="yA" placeholder="yA" step="any">
+
+            <label for="xB">Wierzchołek B (x, y):</label>
+            <input type="number" id="xB" placeholder="xB" step="any">
+            <input type="number" id="yB" placeholder="yB" step="any">
+
+            <label for="xC">Wierzchołek C (x, y):</label>
+            <input type="number" id="xC" placeholder="xC" step="any">
+            <input type="number" id="yC" placeholder="yC" step="any">
+
+            <button onclick="generateTriangle()">Generuj Trójkąt</button>
+
+            <div class="info-panel">
+                <div>
+                    <span>Bok a (naprzeciw A):</span>
+                    <span id="lengthA" class="hidden"></span>
+                    <button onclick="toggleVisibility('lengthA')">Pokaż</button>
+                </div>
+                <div>
+                    <span>Bok b (naprzeciw B):</span>
+                    <span id="lengthB" class="hidden"></span>
+                    <button onclick="toggleVisibility('lengthB')">Pokaż</button>
+                </div>
+                <div>
+                    <span>Bok c (naprzeciw C):</span>
+                    <span id="lengthC" class="hidden"></span>
+                    <button onclick="toggleVisibility('lengthC')">Pokaż</button>
+                </div>
+                <div>
+                    <span>Kąt α (przy A):</span>
+                    <span id="angleAlpha" class="hidden"></span>
+                    <button onclick="toggleVisibility('angleAlpha')">Pokaż</button>
+                </div>
+                <div>
+                    <span>Kąt β (przy B):</span>
+                    <span id="angleBeta" class="hidden"></span>
+                    <button onclick="toggleVisibility('angleBeta')">Pokaż</button>
+                </div>
+                <div>
+                    <span>Kąt γ (przy C):</span>
+                    <span id="angleGamma" class="hidden"></span>
+                    <button onclick="toggleVisibility('angleGamma')">Pokaż</button>
+                </div>
+            </div>
+        </div>
+        <canvas id="triangleCanvas" width="800" height="800"></canvas>
+    </div>
+
+    <script>
+        function toggleVisibility(id) {
+            const element = document.getElementById(id);
+            if (element.classList.contains('hidden')) {
+                element.classList.remove('hidden');
+            } else {
+                element.classList.add('hidden');
+            }
+        }
+
+        function generateTriangle() {
+            const xA = parseFloat(document.getElementById('xA').value);
+            const yA = parseFloat(document.getElementById('yA').value);
+            const xB = parseFloat(document.getElementById('xB').value);
+            const yB = parseFloat(document.getElementById('yB').value);
+            const xC = parseFloat(document.getElementById('xC').value);
+            const yC = parseFloat(document.getElementById('yC').value);
+
+            const canvas = document.getElementById('triangleCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const scale = 25; // Zwiększona skala
+            const offsetX = canvas.width / 2;
+            const offsetY = canvas.height / 2;
+
+            const Ax = xA * scale + offsetX;
+            const Ay = -yA * scale + offsetY;
+            const Bx = xB * scale + offsetX;
+            const By = -yB * scale + offsetY;
+            const Cx = xC * scale + offsetX;
+            const Cy = -yC * scale + offsetY;
+
+            ctx.beginPath();
+            ctx.moveTo(Ax, Ay);
+            ctx.lineTo(Bx, By);
+            ctx.lineTo(Cx, Cy);
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.fillStyle = "black";
+            ctx.font = "16px Arial";
+
+            ctx.fillText(`A (${xA}, ${yA})`, Ax, Ay - 15);
+            ctx.fillText(`B (${xB}, ${yB})`, Bx, By - 15);
+            ctx.fillText(`C (${xC}, ${yC})`, Cx, Cy - 15);
+
+            // Etykiety boków
+            ctx.fillText("c", (Ax + Bx) / 2 + 5, (Ay + By) / 2 - 5);
+            ctx.fillText("a", (Bx + Cx) / 2 + 5, (By + Cy) / 2 - 5);
+            ctx.fillText("b", (Cx + Ax) / 2 + 5, (Cy + Ay) / 2 - 5);
+
+            // Etykiety kątów
+            ctx.fillText("α", Ax + 10, Ay + 10);
+            ctx.fillText("β", Bx + 10, By + 10);
+            ctx.fillText("γ", Cx + 10, Cy + 10);
+
+            const a = calculateDistance(xB, yB, xC, yC);
+            const b = calculateDistance(xA, yA, xC, yC);
+            const c = calculateDistance(xA, yA, xB, yB);
+
+            const alpha = calculateAngle(b, c, a);
+            const beta = calculateAngle(a, c, b);
+            const gamma = calculateAngle(a, b, c);
+
+            document.getElementById('lengthA').textContent = a.toFixed(2);
+            document.getElementById('lengthB').textContent = b.toFixed(2);
+            document.getElementById('lengthC').textContent = c.toFixed(2);
+
+            document.getElementById('angleAlpha').textContent = alpha.toFixed(2);
+            document.getElementById('angleBeta').textContent = beta.toFixed(2);
+            document.getElementById('angleGamma').textContent = gamma.toFixed(2);
+        }
+
+        function calculateDistance(x1, y1, x2, y2) {
+            return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        }
+
+        function calculateAngle(a, b, c) {
+            return Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b)) * (180 / Math.PI);
+        }
+    </script>
+</body>
+</html>
