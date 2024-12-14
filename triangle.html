@@ -32,13 +32,13 @@
         .form-panel button {
             padding: 8px;
             font-size: 16px;
-            background-color: #4CAF50;
+            background-color: #537492;
             color: white;
             border: none;
             cursor: pointer;
         }
         .form-panel button:hover {
-            background-color: #45a049;
+            background-color: #537492;
         }
         canvas {
             border: 1px solid #333;
@@ -56,39 +56,58 @@
             display: flex;
             justify-content: space-between;
         }
+        .trig-functions {
+            padding: 10px;
+            background-color: #e6e6e6;
+            border-radius: 5px;
+        }
+        .trig-functions h4 {
+            margin: 0 0 10px;
+        }
+        .trig-functions ul {
+            list-style: none;
+            padding: 0;
+        }
+        .trig-functions ul.hidden {
+            display: none;
+        }
+        .trig-functions li {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="form-panel">
             <h2>Wprowadź współrzędne wierzchołków:</h2>
-            <label for="xA">Wierzchołek A (x, y):</label>
+            <label for="xA">Wierzchołek A(x, y):</label>
             <input type="number" id="xA" placeholder="xA" step="any">
             <input type="number" id="yA" placeholder="yA" step="any">
 
-            <label for="xB">Wierzchołek B (x, y):</label>
+            <label for="xB">Wierzchołek B(x, y):</label>
             <input type="number" id="xB" placeholder="xB" step="any">
             <input type="number" id="yB" placeholder="yB" step="any">
 
-            <label for="xC">Wierzchołek C (x, y):</label>
+            <label for="xC">Wierzchołek C(x, y):</label>
             <input type="number" id="xC" placeholder="xC" step="any">
             <input type="number" id="yC" placeholder="yC" step="any">
 
             <button onclick="generateTriangle()">Generuj Trójkąt</button>
+            <button onclick="exportToSVG()">Eksportuj do SVG</button>
 
             <div class="info-panel">
                 <div>
-                    <span>Bok a (naprzeciw A):</span>
+                    <span>Długość boku a (naprzeciw A):</span>
                     <span id="lengthA" class="hidden"></span>
                     <button onclick="toggleVisibility('lengthA')">Pokaż</button>
                 </div>
                 <div>
-                    <span>Bok b (naprzeciw B):</span>
+                    <span>Długość boku b (naprzeciw B):</span>
                     <span id="lengthB" class="hidden"></span>
                     <button onclick="toggleVisibility('lengthB')">Pokaż</button>
                 </div>
                 <div>
-                    <span>Bok c (naprzeciw C):</span>
+                    <span>Długość boku c (naprzeciw C):</span>
                     <span id="lengthC" class="hidden"></span>
                     <button onclick="toggleVisibility('lengthC')">Pokaż</button>
                 </div>
@@ -107,12 +126,23 @@
                     <span id="angleGamma" class="hidden"></span>
                     <button onclick="toggleVisibility('angleGamma')">Pokaż</button>
                 </div>
+                <div class="trig-functions">
+                    <h4>Funkcje Trygonometryczne</h4>
+                    <button onclick="toggleList('trigAlpha')">Kąt α</button>
+                    <ul id="trigAlpha" class="hidden"></ul>
+                    <button onclick="toggleList('trigBeta')">Kąt β</button>
+                    <ul id="trigBeta" class="hidden"></ul>
+                    <button onclick="toggleList('trigGamma')">Kąt γ</button>
+                    <ul id="trigGamma" class="hidden"></ul>
+                </div>
             </div>
         </div>
         <canvas id="triangleCanvas" width="800" height="800"></canvas>
     </div>
 
     <script>
+        let triangleData = {};
+    
         function toggleVisibility(id) {
             const element = document.getElementById(id);
             if (element.classList.contains('hidden')) {
@@ -122,6 +152,15 @@
             }
         }
 
+        function toggleList(id) {
+            const list = document.getElementById(id);
+            if (list.classList.contains('hidden')) {
+                list.classList.remove('hidden');
+            } else {
+                list.classList.add('hidden');
+            }
+        }
+        
         function generateTriangle() {
             const xA = parseFloat(document.getElementById('xA').value);
             const yA = parseFloat(document.getElementById('yA').value);
@@ -160,9 +199,27 @@
             ctx.fillText(`C (${xC}, ${yC})`, Cx, Cy - 15);
 
             // Etykiety boków
-            ctx.fillText("c", (Ax + Bx) / 2 + 5, (Ay + By) / 2 - 5);
-            ctx.fillText("a", (Bx + Cx) / 2 + 5, (By + Cy) / 2 - 5);
-            ctx.fillText("b", (Cx + Ax) / 2 + 5, (Cy + Ay) / 2 - 5);
+            const moveOutside = (x1, y1, x2, y2, offset) => {
+            const midX = (x1 + x2) / 2;
+            const midY = (y1 + y2) / 2;
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const length = Math.sqrt(dx * dx + dy * dy);
+            const normX = -dy / length; // Normalny wektor w kierunku zewnętrznym
+            const normY = dx / length;
+            return { x: midX + normX * offset, y: midY + normY * offset };
+            };
+
+            const offset = 15; // Odległość przesunięcia etykiety nazwy boku od środka boku
+
+            const labelC = moveOutside(Ax, Ay, Bx, By, offset);
+            ctx.fillText("c", labelC.x, labelC.y);
+
+            const labelA = moveOutside(Bx, By, Cx, Cy, offset);
+            ctx.fillText("a", labelA.x, labelA.y);
+
+            const labelB = moveOutside(Cx, Cy, Ax, Ay, offset);
+            ctx.fillText("b", labelB.x, labelB.y);
 
             // Etykiety kątów
             ctx.fillText("α", Ax + 10, Ay + 10);
@@ -184,6 +241,14 @@
             document.getElementById('angleAlpha').textContent = alpha.toFixed(2);
             document.getElementById('angleBeta').textContent = beta.toFixed(2);
             document.getElementById('angleGamma').textContent = gamma.toFixed(2);
+
+            populateTrigFunctions('trigAlpha', alpha);
+            populateTrigFunctions('trigBeta', beta);
+            populateTrigFunctions('trigGamma', gamma);
+            
+            triangleData = {
+                xA, yA, xB, yB, xC, yC, a, b, c, alpha, beta, gamma
+            };
         }
 
         function calculateDistance(x1, y1, x2, y2) {
@@ -193,6 +258,83 @@
         function calculateAngle(a, b, c) {
             return Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b)) * (180 / Math.PI);
         }
+
+        function populateTrigFunctions(listId, angle) {
+            const radians = angle * (Math.PI / 180);
+            const trigList = document.getElementById(listId);
+            trigList.innerHTML = '';
+
+            const trigFunctions = {
+                sin: Math.sin(radians),
+                cos: Math.cos(radians),
+                tan: Math.tan(radians),
+                ctg: 1 / Math.tan(radians),
+                sec: 1 / Math.cos(radians),
+                csc: 1 / Math.sin(radians),
+                cis: `cos: ${Math.cos(radians)}, sin: ${Math.sin(radians)}`,
+                arcsin: Math.asin(Math.sin(radians)) * (180 / Math.PI),
+                arccos: Math.acos(Math.cos(radians)) * (180 / Math.PI),
+                arctan: Math.atan(Math.tan(radians)) * (180 / Math.PI),
+                arcctg: Math.atan(1 / Math.tan(radians)) * (180 / Math.PI),
+                arcsec: Math.acos(1 / Math.cos(radians)) * (180 / Math.PI),
+                arccsc: Math.asin(1 / Math.sin(radians)) * (180 / Math.PI),
+                arccis: `arccos: ${Math.acos(Math.cos(radians)) * (180 / Math.PI)}, arcsin: ${Math.asin(Math.sin(radians)) * (180 / Math.PI)}`
+            };
+
+            for (const [key, value] of Object.entries(trigFunctions)) {
+                const li = document.createElement('li');
+                li.textContent = `${key}: ${isNaN(value) ? '∞' : value.toFixed(2)}`;
+                trigList.appendChild(li);
+            }
+        }
+
+        // Moved exportToSVG function to the global scope
+        function exportToSVG() {
+        const { xA, yA, xB, yB, xC, yC, a, b, c, alpha, beta, gamma } = triangleData;
+
+        if (!xA || !xB || !xC || !yA || !yB || !yC) {
+            alert('Proszę wygenerować trójkąt przed eksportem.');
+            return;
+        }
+
+        // Define the SVG structure
+        const svgHeader = '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">';
+        const svgFooter = '</svg>';
+
+        // Define the points for the triangle
+        const svgBody = 
+            `<polygon points="${xA * 25 + 400},${-yA * 25 + 400} ${xB * 25 + 400},${-yB * 25 + 400} ${xC * 25 + 400},${-yC * 25 + 400}" fill="none" stroke="black" />
+            
+            <text x="${xA * 25 + 400}" y="${-yA * 25 + 400 - 15}" font-size="16" text-anchor="middle">A (${xA.toFixed(2)}, ${yA.toFixed(2)})</text>
+            <text x="${xB * 25 + 400}" y="${-yB * 25 + 400 - 15}" font-size="16" text-anchor="middle">B (${xB.toFixed(2)}, ${yB.toFixed(2)})</text>
+            <text x="${xC * 25 + 400}" y="${-yC * 25 + 400 - 15}" font-size="16" text-anchor="middle">C (${xC.toFixed(2)}, ${yC.toFixed(2)})</text>
+            
+            <text x="${(xA + xB) / 2 * 25 + 400}" y="${(-yA + -yB) / 2 * 25 + 400}" font-size="16" text-anchor="middle">c = ${c.toFixed(2)}</text>
+            <text x="${(xB + xC) / 2 * 25 + 400}" y="${(-yB + -yC) / 2 * 25 + 400}" font-size="16" text-anchor="middle">a = ${a.toFixed(2)}</text>
+            <text x="${(xC + xA) / 2 * 25 + 400}" y="${(-yC + -yA) / 2 * 25 + 400}" font-size="16" text-anchor="middle">b = ${b.toFixed(2)}</text>
+
+            <text x="10" y="50" font-size="16">Współrzędne wierzchołka A = (${xA}, ${yA})</text>
+            <text x="10" y="70" font-size="16">Współrzędne wierzchołka B = (${xB}, ${yB})</text>
+            <text x="10" y="90" font-size="16">Współrzędne wierzchołka C = (${xC}, ${yC})</text>
+
+            <text x="10" y="120" font-size="16">Długość boku a = ${a.toFixed(2)}</text>
+            <text x="10" y="140" font-size="16">Długość boku b = ${b.toFixed(2)}</text>
+            <text x="10" y="160" font-size="16">Długość boku c = ${c.toFixed(2)}</text>
+
+            <text x="10" y="190" font-size="16">Kąt α = ${alpha.toFixed(2)}°</text>
+            <text x="10" y="210" font-size="16">Kąt β = ${beta.toFixed(2)}°</text>
+            <text x="10" y="230" font-size="16">Kąt γ = ${gamma.toFixed(2)}°</text>`;
+
+        // Combine everything into the SVG content
+        const svgContent = svgHeader + svgBody + svgFooter;
+
+        // Create a blob with the SVG content and trigger a download
+        const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'triangle_with_info.svg';
+        link.click();
+    }
     </script>
 </body>
 </html>
