@@ -290,51 +290,59 @@
 
         // Moved exportToSVG function to the global scope
         function exportToSVG() {
-        const { xA, yA, xB, yB, xC, yC, a, b, c, alpha, beta, gamma } = triangleData;
+    const { xA, yA, xB, yB, xC, yC, a, b, c, alpha, beta, gamma } = triangleData;
 
-        if (!xA || !xB || !xC || !yA || !yB || !yC) {
-            alert('Proszę wygenerować trójkąt przed eksportem.');
-            return;
-        }
-
-        // Define the SVG structure
-        const svgHeader = '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">';
-        const svgFooter = '</svg>';
-
-        // Define the points for the triangle
-        const svgBody = 
-            `<polygon points="${xA * 25 + 400},${-yA * 25 + 400} ${xB * 25 + 400},${-yB * 25 + 400} ${xC * 25 + 400},${-yC * 25 + 400}" fill="none" stroke="black" />
-            
-            <text x="${xA * 25 + 400}" y="${-yA * 25 + 400 - 15}" font-size="16" text-anchor="middle">A (${xA.toFixed(2)}, ${yA.toFixed(2)})</text>
-            <text x="${xB * 25 + 400}" y="${-yB * 25 + 400 - 15}" font-size="16" text-anchor="middle">B (${xB.toFixed(2)}, ${yB.toFixed(2)})</text>
-            <text x="${xC * 25 + 400}" y="${-yC * 25 + 400 - 15}" font-size="16" text-anchor="middle">C (${xC.toFixed(2)}, ${yC.toFixed(2)})</text>
-            
-            <text x="${(xA + xB) / 2 * 25 + 400}" y="${(-yA + -yB) / 2 * 25 + 400}" font-size="16" text-anchor="middle">c = ${c.toFixed(2)}</text>
-            <text x="${(xB + xC) / 2 * 25 + 400}" y="${(-yB + -yC) / 2 * 25 + 400}" font-size="16" text-anchor="middle">a = ${a.toFixed(2)}</text>
-            <text x="${(xC + xA) / 2 * 25 + 400}" y="${(-yC + -yA) / 2 * 25 + 400}" font-size="16" text-anchor="middle">b = ${b.toFixed(2)}</text>
-
-            <text x="10" y="50" font-size="16">Współrzędne wierzchołka A = (${xA}, ${yA})</text>
-            <text x="10" y="70" font-size="16">Współrzędne wierzchołka B = (${xB}, ${yB})</text>
-            <text x="10" y="90" font-size="16">Współrzędne wierzchołka C = (${xC}, ${yC})</text>
-
-            <text x="10" y="120" font-size="16">Długość boku a = ${a.toFixed(2)}</text>
-            <text x="10" y="140" font-size="16">Długość boku b = ${b.toFixed(2)}</text>
-            <text x="10" y="160" font-size="16">Długość boku c = ${c.toFixed(2)}</text>
-
-            <text x="10" y="190" font-size="16">Kąt α = ${alpha.toFixed(2)}°</text>
-            <text x="10" y="210" font-size="16">Kąt β = ${beta.toFixed(2)}°</text>
-            <text x="10" y="230" font-size="16">Kąt γ = ${gamma.toFixed(2)}°</text>`;
-
-        // Combine everything into the SVG content
-        const svgContent = svgHeader + svgBody + svgFooter;
-
-        // Create a blob with the SVG content and trigger a download
-        const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'triangle_with_info.svg';
-        link.click();
+    if (
+        xA === null || xA === undefined ||
+        xB === null || xB === undefined ||
+        xC === null || xC === undefined ||
+        yA === null || yA === undefined ||
+        yB === null || yB === undefined ||
+        yC === null || yC === undefined
+    ) {
+        alert('Proszę wygenerować trójkąt przed eksportem.');
+        return;
     }
+
+    // Define the SVG structure
+    const svgHeader = '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">';
+    const svgFooter = '</svg>';
+
+    // Define the points for the triangle
+    const svgBody = 
+        `<polygon points="${xA * 25 + 400},${-yA * 25 + 400} ${xB * 25 + 400},${-yB * 25 + 400} ${xC * 25 + 400},${-yC * 25 + 400}" fill="none" stroke="black" />
+        
+        <text x="${xA * 25 + 400}" y="${-yA * 25 + 400 - 15}" font-size="16" text-anchor="middle">A (${xA.toFixed(2)}, ${yA.toFixed(2)})</text>
+        <text x="${xB * 25 + 400}" y="${-yB * 25 + 400 - 15}" font-size="16" text-anchor="middle">B (${xB.toFixed(2)}, ${yB.toFixed(2)})</text>
+        <text x="${xC * 25 + 400}" y="${-yC * 25 + 400 - 15}" font-size="16" text-anchor="middle">C (${xC.toFixed(2)}, ${yC.toFixed(2)})</text>
+        
+        <text x="${(xA + xB) / 2 * 25 + 400}" y="${(-yA + -yB) / 2 * 25 + 400}" font-size="16" text-anchor="middle">c = ${c.toFixed(2)}</text>
+        <text x="${(xB + xC) / 2 * 25 + 400}" y="${(-yB + -yC) / 2 * 25 + 400}" font-size="16" text-anchor="middle">a = ${a.toFixed(2)}</text>
+        <text x="${(xC + xA) / 2 * 25 + 400}" y="${(-yC + -yA) / 2 * 25 + 400}" font-size="16" text-anchor="middle">b = ${b.toFixed(2)}</text>
+
+        <text x="10" y="50" font-size="16">Współrzędne wierzchołka A = (${xA}, ${yA})</text>
+        <text x="10" y="70" font-size="16">Współrzędne wierzchołka B = (${xB}, ${yB})</text>
+        <text x="10" y="90" font-size="16">Współrzędne wierzchołka C = (${xC}, ${yC})</text>
+
+        <text x="10" y="120" font-size="16">Długość boku a = ${a.toFixed(2)}</text>
+        <text x="10" y="140" font-size="16">Długość boku b = ${b.toFixed(2)}</text>
+        <text x="10" y="160" font-size="16">Długość boku c = ${c.toFixed(2)}</text>
+
+        <text x="10" y="190" font-size="16">Kąt α = ${alpha.toFixed(2)}°</text>
+        <text x="10" y="210" font-size="16">Kąt β = ${beta.toFixed(2)}°</text>
+        <text x="10" y="230" font-size="16">Kąt γ = ${gamma.toFixed(2)}°</text>`;
+
+    // Combine everything into the SVG content
+    const svgContent = svgHeader + svgBody + svgFooter;
+
+    // Create a blob with the SVG content and trigger a download
+    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'triangle_with_info.svg';
+    link.click();
+}
+
     </script>
 </body>
 </html>
